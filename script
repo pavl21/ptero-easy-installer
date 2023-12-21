@@ -37,14 +37,14 @@ sudo apt-get install -y dnsutils curl openssl
 clear
 
 # Anzeige einer Whiptail-GUI zur Eingabe der Panel-Domain
-panel_domain=$(whiptail --inputbox "Bitte geben Sie die Domain für das Panel ein:" 10 50 3>&1 1>&2 2>&3)
+panel_domain=$(whiptail --inputbox "Bitte gebe die Domain/FQDN für das Panel ein:" 10 50 3>&1 1>&2 2>&3)
 if [ $? -ne 0 ]; then
     echo "Abbruch durch Benutzer."
     exit 1
 fi
 
 # Anzeige einer Whiptail-GUI zur Eingabe der E-Mail-Adresse
-admin_email=$(whiptail --inputbox "Bitte geben Sie die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
+admin_email=$(whiptail --inputbox "Bitte gebe die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
 if [ $? -ne 0 ]; then
     echo "Abbruch durch Benutzer."
     exit 1
