@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# Kopfzeile für die Pterodactyl Panel Installation anzeigen
+echo "----------------------------------"
+echo "Pterodactyl Panel Installation"
+echo "----------------------------------"
+sleep 3  # 3 Sekunden warten, bevor das Skript fortgesetzt wird
+
+# Konfiguration von dpkg
+echo "⚙️ Konfiguration von dpkg..."
+sudo dpkg --configure -a
+
+# Installieren der erforderlichen Pakete
+echo "⚙️ Installation der erforderlichen Pakete..."
+sudo apt-get update
+sudo apt-get install -y dnsutils curl openssl
+
+# Befehlszeile leeren
+clear
+
+# Eingabe der Panel-Domain
+read -p "Domain für das Panel: " panel_domain
+
+# Eingabe der E-Mail-Adresse
+read -p "E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer: " admin_email
+
+# Funktion zum Generieren eines 64 Zeichen langen zufälligen Passworts ohne Sonderzeichen
+generate_password() {
+    < /dev/urandom tr -dc A-Za-z0-9 | head -c64
+}
+
+user_password=$(generate_password)
+
+echo "Bitte warten Sie, bis die Installation abgeschlossen ist..."
+sleep 2  # 2 Sekunden warten
+
+# Installation des Panels
+bash <(curl -s https://pterodactyl-installer.se) <<EOF
+0
+panel
+pterodactyl
+$user_password
+Europe/Berlin
+$admin_email
+$admin_email
+user
+Admin
+User
+$user_password
+$panel_domain
+N
+N
+N
+y
+yes
+EOF
+
+# Update und Installation von certbot
+echo "⚙️ Update und Installation von Certbot..."
+sudo apt-get update && sudo apt-get install certbot python3-certbot-nginx -y
+
+# Stoppen von nginx
+echo "⚙️ Stoppen von Nginx..."
+sudo systemctl stop nginx
+
+# Freigabe von Port 80
+echo "⚙️ Freigabe von Port 80..."
+sudo fuser -k 80/tcp
+
+# SSL-Zertifikat mit Certbot erstellen und Nginx konfigurieren
+echo "⚙️ SSL-Zertifikat erstellen und Nginx konfigurieren..."
+sudo certbot --nginx -d $panel_domain --email $admin_email --agree-tos --non-interactive
+
+# Neustarten von nginx
+echo "⚙️ Neustarten von Nginx..."
+sudo systemctl start nginx
+
+# Erfolgreiche Installationsnachricht in zugangsdaten.txt speichern
+echo "-----------------------------------------------------------------------------------" > zugangsdaten.txt
+echo "Installation des Panels erfolgreich." >> zugangsdaten.txt
+echo "🌐 Die verwendete Domain ist: $panel_domain" >> zugangsdaten.txt
+echo "🔑 Ihre generierten Zugangsdaten sind:" >> zugangsdaten.txt
+echo "👤 Benutzername: User" >> zugangsdaten.txt
+echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
+echo "-----------------------------------------------------------------------------------" >> zugangsdaten.txt
+
+echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert."
