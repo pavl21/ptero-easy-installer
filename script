@@ -128,4 +128,5 @@ echo "👤 Benutzername: User" >> zugangsdaten.txt
 echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
 echo "-----------------------------------------------------------------------------------" >> zugangsdaten.txt
 
+cat zugangsdaten.txt
 echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert."
