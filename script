@@ -53,9 +53,10 @@ sleep 5
 dns_ip=$(dig +short $panel_domain)
 
 if [ "$dns_ip" == "$server_ip" ]; then
-    echo "✅ Die Domain $panel_domain zeigt auf diese Server-IP ($server_ip). Installation wird fortgesetzt."
+    echo "✅ Die Domain $panel_domain ist korrekt mit der IP-Adresse dieses Servers ($server_ip) verknüpft. Installation wird fortgesetzt."
 else
-    echo "❌ Die Domain $panel_domain ist mit eine andere IP-Adresse verbunden ($dns_ip). Prüfe, ob die DNS-Einträge richtig sind und ob du in Cloudflare den Proxy deaktiviert hast. Die Installation wird abgebrochen."
+    echo "❌ Die Domain $panel_domain ist mit einer anderen IP-Adresse verbunden ($dns_ip)."
+    echo "Prüfe, ob die DNS-Einträge richtig sind und ob du in Cloudflare den Proxy deaktiviert hast. Die Installation wird abgebrochen."
     exit 1
 fi
 
