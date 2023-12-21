@@ -13,7 +13,7 @@ if ! command -v whiptail &> /dev/null; then
     elif command -v yum &> /dev/null; then
         sudo yum install -y newt
     else
-        echo "Paketverwaltungssystem nicht erkannt. Bitte installieren Sie Whiptail manuell."
+        echo "Paketverwaltungssystem nicht erkannt. Bitte installiere Whiptail manuell."
         exit 1
     fi
 fi
@@ -56,7 +56,7 @@ if [ "$dns_ip" == "$server_ip" ]; then
     echo "✅ Die Domain $panel_domain ist korrekt mit der IP-Adresse dieses Servers ($server_ip) verknüpft. Installation wird fortgesetzt."
 else
     echo "❌ Die Domain $panel_domain ist mit einer anderen IP-Adresse verbunden ($dns_ip)."
-    echo "Prüfe, ob die DNS-Einträge richtig sind und ob du in Cloudflare den Proxy deaktiviert hast. Die Installation wird abgebrochen."
+    echo "Prüfe, ob die DNS-Einträge richtig sind, das sich kein Schreibfehler eingeschlichen hat und ob du in Cloudflare (Falls du es nutzt) den Proxy deaktiviert hast. Die Installation wird abgebrochen."
     exit 1
 fi
 
