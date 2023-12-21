@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Überprüfen, ob Whiptail installiert ist, und falls nicht, es installieren
+if ! command -v whiptail &> /dev/null; then
+    echo "Whiptail ist nicht installiert. Installiere Whiptail..."
+    
+    # Je nach Paketverwaltungssystem die Installation durchführen
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y whiptail
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install -y newt
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y newt
+    else
+        echo "Paketverwaltungssystem nicht erkannt. Bitte installieren Sie Whiptail manuell."
+        exit 1
+    fi
+fi
+
 # Kopfzeile für die Pterodactyl Panel Installation anzeigen
 echo "----------------------------------"
 echo "Pterodactyl Panel Installation"
@@ -18,11 +36,19 @@ sudo apt-get install -y dnsutils curl openssl
 # Befehlszeile leeren
 clear
 
-# Eingabe der Panel-Domain
-read -p "Domain für das Panel: " panel_domain
+# Anzeige einer Whiptail-GUI zur Eingabe der Panel-Domain
+panel_domain=$(whiptail --inputbox "Bitte geben Sie die Domain für das Panel ein:" 10 50 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+    echo "Abbruch durch Benutzer."
+    exit 1
+fi
 
-# Eingabe der E-Mail-Adresse
-read -p "E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer: " admin_email
+# Anzeige einer Whiptail-GUI zur Eingabe der E-Mail-Adresse
+admin_email=$(whiptail --inputbox "Bitte geben Sie die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+    echo "Abbruch durch Benutzer."
+    exit 1
+fi
 
 # Funktion zum Generieren eines 64 Zeichen langen zufälligen Passworts ohne Sonderzeichen
 generate_password() {
@@ -63,13 +89,14 @@ sudo apt-get update && sudo apt-get install certbot python3-certbot-nginx -y
 echo "⚙️ Stoppen von Nginx..."
 sudo systemctl stop nginx
 
-# Freigabe von Port 80
-echo "⚙️ Freigabe von Port 80..."
-sudo fuser -k 80/tcp
-
 # SSL-Zertifikat mit Certbot erstellen und Nginx konfigurieren
 echo "⚙️ SSL-Zertifikat erstellen und Nginx konfigurieren..."
 sudo certbot --nginx -d $panel_domain --email $admin_email --agree-tos --non-interactive
+
+# Freigabe von Port 80 und Port 443
+echo "⚙️ Freigabe von Port 80 und Port 443..."
+sudo fuser -k 80/tcp
+sudo fuser -k 443/tcp
 
 # Neustarten von nginx
 echo "⚙️ Neustarten von Nginx..."
