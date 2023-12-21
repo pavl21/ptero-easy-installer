@@ -43,6 +43,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# IP-Adresse des Servers
+server_ip=$(hostname -I | awk '{print $1}')
+clear
+echo "Es wird geprüft, ob die Domain mit der IP korrekt verbunden wurde..."
+sleep 5
+
+# IP-Adresse aus dem DNS-A-Eintrag der Domain extrahieren
+dns_ip=$(dig +short $panel_domain)
+
+if [ "$dns_ip" == "$server_ip" ]; then
+    echo "✅ Die Domain $panel_domain zeigt auf diese Server-IP ($server_ip). Installation wird fortgesetzt."
+else
+    echo "❌ Die Domain $panel_domain ist mit eine andere IP-Adresse verbunden ($dns_ip). Prüfe, ob die DNS-Einträge richtig sind und ob du in Cloudflare den Proxy deaktiviert hast. Die Installation wird abgebrochen."
+    exit 1
+fi
+
 # Anzeige einer Whiptail-GUI zur Eingabe der E-Mail-Adresse
 admin_email=$(whiptail --inputbox "Bitte gebe die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
 if [ $? -ne 0 ]; then
