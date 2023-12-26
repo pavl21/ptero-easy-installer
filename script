@@ -21,6 +21,7 @@ fi
 # Kopfzeile für die Pterodactyl Panel Installation anzeigen
 echo "----------------------------------"
 echo "Pterodactyl Panel Installation"
+echo "Vereinfacht von Pavl21, Script von https://pterodactyl-installer.se/ wird verwendet. "
 echo "----------------------------------"
 sleep 3  # 3 Sekunden warten, bevor das Skript fortgesetzt wird
 
@@ -47,23 +48,34 @@ fi
 server_ip=$(hostname -I | awk '{print $1}')
 clear
 echo "Es wird geprüft, ob die Domain mit der IP korrekt verbunden wurde..."
-sleep 5
+sleep 2
 
 # IP-Adresse aus dem DNS-A-Eintrag der Domain extrahieren
 dns_ip=$(dig +short $panel_domain)
 
 if [ "$dns_ip" == "$server_ip" ]; then
+    clear
+    echo "VERIFIZIERT - - - - - - - - - - - - - - - - - - - - -"
+    echo ""
     echo "✅ Die Domain $panel_domain ist korrekt mit der IP-Adresse dieses Servers ($server_ip) verknüpft. Installation wird fortgesetzt."
+    echo ""
+    echo "VERIFIZIERT - - - - - - - - - - - - - - - - - - - - -"
+    sleep 4
 else
+    clear
+    echo "KEINE ÜBEREINSTIMMUNG - - - - - - - - - - - - - - - - - - - - -"
+    echo ""
     echo "❌ Die Domain $panel_domain ist mit einer anderen IP-Adresse verbunden ($dns_ip)."
     echo "Prüfe, ob die DNS-Einträge richtig sind, das sich kein Schreibfehler eingeschlichen hat und ob du in Cloudflare (Falls du es nutzt) den Proxy deaktiviert hast. Die Installation wird abgebrochen."
+    echo ""
+    echo "KEINE ÜBEREINSTIMMUNG - - - - - - - - - - - - - - - - - - - - -"
     exit 1
 fi
 
 # Anzeige einer Whiptail-GUI zur Eingabe der E-Mail-Adresse
 admin_email=$(whiptail --inputbox "Bitte gebe die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
 if [ $? -ne 0 ]; then
-    echo "Abbruch durch Benutzer."
+    echo "Die Installation wurde vom Nutzer abgebrochen."
     exit 1
 fi
 
@@ -74,8 +86,12 @@ generate_password() {
 
 user_password=$(generate_password)
 
-echo "Bitte warten Sie, bis die Installation abgeschlossen ist..."
-sleep 2  # 2 Sekunden warten
+echo "INFO - - - - - - - - - - - - -"
+echo ""
+echo "Bitte warte, bis die Installation abgeschlossen ist. Das kann je nach Leistung deines Servers einige Minuten dauern..."
+echo ""
+echo "INFO - - - - - - - - - - - - -"
+sleep 5  # 2 Sekunden warten
 
 # Installation des Panels
 bash <(curl -s https://pterodactyl-installer.se) <<EOF
@@ -129,4 +145,5 @@ echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
 echo "-----------------------------------------------------------------------------------" >> zugangsdaten.txt
 
 cat zugangsdaten.txt
-echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert."
+echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert. Du kannst dich nun in $panel_domain anmelden."
+echo "HINWEIS: Pterodactyl ist noch nicht vollständig eingerichtet. Du musst noch Wings einrichten und eine Node anlegen, damit du Server aufsetzen kannst. Im Panel findest du das erstellen einer Node hier: https://$panel_domain/admin/nodes/new ."
