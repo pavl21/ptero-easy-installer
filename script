@@ -19,6 +19,7 @@ if ! command -v whiptail &> /dev/null; then
 fi
 
 # Kopfzeile für die Pterodactyl Panel Installation anzeigen
+clear
 echo "----------------------------------"
 echo "Pterodactyl Panel Installation"
 echo "Vereinfacht von Pavl21, Script von https://pterodactyl-installer.se/ wird verwendet. "
@@ -73,7 +74,7 @@ else
 fi
 
 # Anzeige einer Whiptail-GUI zur Eingabe der E-Mail-Adresse
-admin_email=$(whiptail --inputbox "Bitte gebe die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein:" 10 50 3>&1 1>&2 2>&3)
+admin_email=$(whiptail --inputbox "Bitte gebe die E-Mail-Adresse für das SSL-Zertifikat und den Admin-Benutzer ein. Durch Eingabe bestätigst du die Nutzungsbedingungen von Let`s Encrypt." 10 50 3>&1 1>&2 2>&3)
 if [ $? -ne 0 ]; then
     echo "Die Installation wurde vom Nutzer abgebrochen."
     exit 1
@@ -86,11 +87,12 @@ generate_password() {
 
 user_password=$(generate_password)
 
-echo "INFO - - - - - - - - - - - - -"
+clear
+echo "STARTVORGANG - - - - - - - - - - - - -"
 echo ""
 echo "Bitte warte, bis die Installation abgeschlossen ist. Das kann je nach Leistung deines Servers einige Minuten dauern..."
 echo ""
-echo "INFO - - - - - - - - - - - - -"
+echo "STARTVORGANG - - - - - - - - - - - - -"
 sleep 5  # 2 Sekunden warten
 
 # Installation des Panels
@@ -115,35 +117,44 @@ yes
 EOF
 
 # Update und Installation von certbot
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Update und Installation von Certbot..."
 sudo apt-get update && sudo apt-get install certbot python3-certbot-nginx -y
 
 # Stoppen von nginx
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Stoppen von Nginx..."
 sudo systemctl stop nginx
 
 # SSL-Zertifikat mit Certbot erstellen und Nginx konfigurieren
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ SSL-Zertifikat erstellen und Nginx konfigurieren..."
 sudo certbot --nginx -d $panel_domain --email $admin_email --agree-tos --non-interactive
 
 # Freigabe von Port 80 und Port 443
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Freigabe von Port 80 und Port 443..."
 sudo fuser -k 80/tcp
 sudo fuser -k 443/tcp
 
 # Neustarten von nginx
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Neustarten von Nginx..."
 sudo systemctl start nginx
 
 # Erfolgreiche Installationsnachricht in zugangsdaten.txt speichern
-echo "-----------------------------------------------------------------------------------" > zugangsdaten.txt
+echo "INSTALLIERT ---------------------------------------------------------------------" > zugangsdaten.txt
 echo "Installation des Panels erfolgreich." >> zugangsdaten.txt
 echo "🌐 Die verwendete Domain ist: $panel_domain" >> zugangsdaten.txt
 echo "🔑 Ihre generierten Zugangsdaten sind:" >> zugangsdaten.txt
 echo "👤 Benutzername: User" >> zugangsdaten.txt
 echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
-echo "-----------------------------------------------------------------------------------" >> zugangsdaten.txt
+echo "INSTALLIERT----------------------------------------------------------------------" >> zugangsdaten.txt
 
 cat zugangsdaten.txt
+echo "INFO - - - - - - - - - - - - - - - -"
+echo ""
 echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert. Du kannst dich nun in $panel_domain anmelden."
 echo "HINWEIS: Pterodactyl ist noch nicht vollständig eingerichtet. Du musst noch Wings einrichten und eine Node anlegen, damit du Server aufsetzen kannst. Im Panel findest du das erstellen einer Node hier: https://$panel_domain/admin/nodes/new ."
+echo ""
+echo "INFO - - - - - - - - - - - - - - - -"
