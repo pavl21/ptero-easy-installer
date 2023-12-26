@@ -152,13 +152,13 @@ echo "⚙️ Neustarten von Nginx..."
 sudo systemctl start nginx
 
 # Erfolgreiche Installationsnachricht in zugangsdaten.txt speichern
-echo "INSTALLIERT ---------------------------------------------------------------------" > zugangsdaten.txt
+echo "PTERODACTYL ZUGANGSDATEN -----------------" > zugangsdaten.txt
 echo "Installation des Panels erfolgreich." >> zugangsdaten.txt
 echo "🌐 Die verwendete Domain ist: $panel_domain" >> zugangsdaten.txt
 echo "🔑 Ihre generierten Zugangsdaten sind:" >> zugangsdaten.txt
 echo "👤 Benutzername: User" >> zugangsdaten.txt
 echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
-echo "INSTALLIERT----------------------------------------------------------------------" >> zugangsdaten.txt
+echo "PTERODACTYL ZUGANGSDATEN ------------------" >> zugangsdaten.txt
 clear
 echo ""
 echo ""
