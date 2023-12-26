@@ -151,6 +151,15 @@ echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Neustarten von Nginx..."
 sudo systemctl start nginx
 
+# Installieren von GermanDactyl
+clear
+echo "STATUS - - - - - - - - - - - - - - - -"
+echo "⚙️ GermanDactyl wird installiert..."
+curl -sSL https://install.germandactyl.de/ | sudo bash -s -- -v1.11.3
+# GermanDactyl ist noch nicht aktuell, daher wird eine frührere Version von 1.11.3 genutzt. Das macht aber keinen großen Unterschied.
+
+
+
 # Erfolgreiche Installationsnachricht in zugangsdaten.txt speichern
 echo "PTERODACTYL ZUGANGSDATEN -----------------" > zugangsdaten.txt
 echo "Installation des Panels erfolgreich." >> zugangsdaten.txt
