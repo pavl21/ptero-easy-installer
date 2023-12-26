@@ -121,27 +121,32 @@ yes
 EOF
 
 # Update und Installation von certbot
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Update und Installation von Certbot..."
 sudo apt-get update && sudo apt-get install certbot python3-certbot-nginx -y
 
 # Stoppen von nginx
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Stoppen von Nginx..."
 sudo systemctl stop nginx
 
 # SSL-Zertifikat mit Certbot erstellen und Nginx konfigurieren
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ SSL-Zertifikat erstellen und Nginx konfigurieren..."
 sudo certbot --nginx -d $panel_domain --email $admin_email --agree-tos --non-interactive
 
 # Freigabe von Port 80 und Port 443
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Freigabe von Port 80 und Port 443..."
 sudo fuser -k 80/tcp
 sudo fuser -k 443/tcp
 
 # Neustarten von nginx
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Neustarten von Nginx..."
 sudo systemctl start nginx
@@ -154,11 +159,12 @@ echo "🔑 Ihre generierten Zugangsdaten sind:" >> zugangsdaten.txt
 echo "👤 Benutzername: User" >> zugangsdaten.txt
 echo "🔒 Passwort (64 Zeichen): $user_password" >> zugangsdaten.txt
 echo "INSTALLIERT----------------------------------------------------------------------" >> zugangsdaten.txt
-
-cat zugangsdaten.txt
+clear
+echo ""
+echo ""
 echo "INFO - - - - - - - - - - - - - - - -"
 echo ""
-echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert. Du kannst dich nun in $panel_domain anmelden."
+echo "Die Zugangsdaten wurden in die Datei 'zugangsdaten.txt' gespeichert, diese kannst du mit dem Befehl cat zugangsdaten.txt sehen. Du kannst dich nun in $panel_domain anmelden."
 echo "HINWEIS: Pterodactyl ist noch nicht vollständig eingerichtet. Du musst noch Wings einrichten und eine Node anlegen, damit du Server aufsetzen kannst. Im Panel findest du das erstellen einer Node hier: https://$panel_domain/admin/nodes/new ."
 echo ""
 echo "INFO - - - - - - - - - - - - - - - -"
