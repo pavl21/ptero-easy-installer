@@ -27,10 +27,12 @@ echo "----------------------------------"
 sleep 3  # 3 Sekunden warten, bevor das Skript fortgesetzt wird
 
 # Konfiguration von dpkg
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Konfiguration von dpkg..."
 sudo dpkg --configure -a
 
 # Installieren der erforderlichen Pakete
+echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Installation der erforderlichen Pakete..."
 sudo apt-get update
 sudo apt-get install -y dnsutils curl openssl
