@@ -27,11 +27,13 @@ echo "----------------------------------"
 sleep 3  # 3 Sekunden warten, bevor das Skript fortgesetzt wird
 
 # Konfiguration von dpkg
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Konfiguration von dpkg..."
 sudo dpkg --configure -a
 
 # Installieren der erforderlichen Pakete
+clear
 echo "STATUS - - - - - - - - - - - - - - - -"
 echo "⚙️ Installation der erforderlichen Pakete..."
 sudo apt-get update
